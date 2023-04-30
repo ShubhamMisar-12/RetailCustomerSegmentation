@@ -14,8 +14,9 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
+```{r}
 library(dplyr)
+library(ggplot2)
 ```
 
 ## Including Plots
@@ -27,4 +28,77 @@ df <- read.csv('./Customer_Data.csv')
 df
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+sum(is.na(df))
+```
+
+
+## EDA
+
+```{r}
+df[duplicated(df)]
+```
+
+
+```{r}
+df <- df %>% 
+  select(-ID)
+```
+
+
+```{r}
+df
+```
+
+
+```{r}
+ggplot(df, aes(x=Year_Birth))+ 
+     geom_histogram(color = "grey", fill = "#1f77b4", bins = 30)+
+  labs(x = "Year of Birth",
+       y = "count", 
+       title = "Distribution of Birth Year")+
+  theme_minimal()
+
+```
+
+```{r}
+df %>% 
+  filter(Year_Birth < 1930)
+```
+
+seems like they are erroneous entries
+
+```{r}
+ggplot(df, aes(Marital_Status)) +
+  geom_bar(fill = "#1f77b7", alpha = 0.8) + 
+  labs( x= "Marital Status",
+        y = "count",
+        title = "Frequency plot for marital status")+
+  theme_minimal()
+```
+
+```{r}
+ggplot(df, aes(x = Income)) + 
+  geom_histogram(fill = "#1f77b7", alpha = 0.8)+ 
+  labs(x = "Income",
+       y = "Count",
+       title = "Distribution of Income")+
+  scale_x_continuous(breaks = seq(5000, 100000, by=  40000))+
+  theme_minimal()
+```
+
+
+```{r}
+df %>% 
+  filter(Income < 500000) %>% 
+  ggplot(aes(x = Income)) + 
+  geom_histogram(fill = "#1f77b7", alpha = 0.8)+ 
+  labs(x = "Income",
+       y = "Count",
+       title = "Distribution of Income")+
+  scale_x_continuous(breaks = seq(5000, 200000, by=  20000))+
+  theme_minimal()
+```
+
+
+
