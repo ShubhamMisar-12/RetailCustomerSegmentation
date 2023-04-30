@@ -130,7 +130,7 @@ df[!complete.cases(df),]
 summary(df)
 ```
 
-The missing values seems to have occured at random as there are 24 missing values which is 1% of the total data, we can omit those values.
+The missing values seems to have occurred at random as there are 24 missing values which is 1% of the total data, we can omit those values.
 
 
 ```{r}
@@ -163,4 +163,99 @@ df<- df %>%
 summary(df$Dt_Customer)
 ```
 
+Calculating Ages by taking the maximum Date
+
+
+```{r}
+df <- df %>% 
+  mutate(Age = 2014 - Year_Birth)
+```
+
+
+```{r}
+ggplot(df, aes(x = Age)) +
+  geom_histogram(fill = "#1f77b7", bins = 35, alpha = 0.8) + 
+  labs(x = "Age",
+       y = "count",
+       title = "Distribution of Age")
+```
+```{r}
+df %>% 
+  filter(Income != 666666) %>% 
+ggplot(aes(x = Age, y = Income) )+
+geom_point(color = "#0072B2", size = 2)+
+theme_minimal()
+```
+There is no any evident pattern 
+
+### Removing Ouliter from data for Income and capping max age to 70
+
+```{r}
+df<- df %>% 
+  filter(Income != 666666) %>% 
+  mutate(Age = ifelse(Age > 70, 70, Age))
+```
+
+
+```{r}
+summary(df$Age)
+```
+
+```{r}
+summary(df$Income)
+```
+
+### Checking Correlation between amount of product bought
+
+
+```{r}
+df_product <- df[,c("MntWines","MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds")]
+```
+
+
+```{r}
+
+library(ggcorrplot)
+
+corr_mat_products <- cor(df_product)
+
+# Create the correlation plot using ggcorrplot
+ggcorrplot(corr_mat_products, hc.order = TRUE) +
+  theme(plot.title = element_text(hjust = 0.8)) +
+  geom_text(aes(label = value)) +
+  ggtitle("Correlation Plot of Sample Data")
+```
+
+No Correlation Present between products
+
+
+```{r}
+df_gateway <- df[,c("NumDealsPurchases", "NumStorePurchases", "NumWebPurchases", "NumCatalogPurchases", "NumWebVisitsMonth")]
+```
+
+```{r}
+corr_mat_gtwy <- cor(df_gateway)
+```
+
+
+```{r}
+# Create the correlation plot using ggcorrplot
+ggcorrplot(corr_mat_gtwy, hc.order = TRUE) +
+  theme(plot.title = element_text(hjust = 0.8)) +
+  geom_text(aes(label = value)) +
+  ggtitle("Correlation Plot of Sample Data")
+```
+```{r}
+df_campaign <- df[,c("AcceptedCmp1", "AcceptedCmp2", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5")]
+corr_mat_campaign <- cor(df_campaign)
+
+```
+
+
+```{r}
+ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
+  theme(plot.title = element_text(hjust = 0.8)) +
+  geom_text(aes(label = value)) +
+  ggtitle("Correlation Plot of Sample Data")
+```
 
