@@ -262,7 +262,7 @@ ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
 ### Now we examine relation across various columns 
 
 ```{r}
-df
+df 
 ```
 
 ```{r}
@@ -298,5 +298,72 @@ df %>%
   geom_point(color = "#1f77b7", size = 2) + 
   theme_minimal()
 ```
-We see a non-lionear
+We see a non-linear relationship between Income and Total Purchase 
+
+
+```{r}
+par(mfrow = c(2,1))
+
+df %>% 
+  group_by(Education) %>% 
+  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
+  ggplot(aes(x = Education, y = Total_Purchase_by_Marital)) +
+  geom_col(fill = "#1f77b7") + 
+  theme_minimal()+
+  labs(x = "Education",
+       y = "Total Purchase") 
+  
+df %>% 
+  ggplot(aes(x = Education) )+ 
+  geom_bar()
+```
+Similar proportion in Buying
+
+
+
+### Feature Engineering
+
+
+We Create following features for Data Modelling
+
+1. Age (already Created)
+2. Total Purchase (Already Created) : Spending sum on all goods
+3. Is_Parent: If customer has kids home
+4. Education: Undergraduate, Graduate, Post-Graduate 
+5. Has_Partner: If living with someone.
+
+
+```{r}
+df %>% 
+  select(Kidhome, Teenhome)
+```
+
+```{r}
+df <- df %>% 
+  mutate(Is_Parent = ifelse(Kidhome + Teenhome > 0, 1, 0)) 
+```
+
+
+```{r}
+df %>% 
+  ggplot(aes(x = Is_Parent, y = Total_Purchaase)) +
+  geom_col(fill = "#1f77b7")+
+  theme_minimal()
+
+df %>% 
+  ggplot(aes(Is_Parent) ) +
+  geom_bar(fill = "#1f77b7")+
+  theme_minimal()
+
+```
+We see parents who have kids have spent relative more given then proportion in data.
+
+
+```{r}
+
+```
+
+
+
+
 
