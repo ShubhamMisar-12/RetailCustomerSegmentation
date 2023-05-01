@@ -174,7 +174,7 @@ df <- df %>%
 
 ```{r}
 ggplot(df, aes(x = Age)) +
-  geom_histogram(fill = "#1f77b7", bins = 35, alpha = 0.8) + 
+  geom_histogram(fill = "#1f77b7", bins = 40, alpha = 0.8) + 
   labs(x = "Age",
        y = "count",
        title = "Distribution of Age")
@@ -258,4 +258,45 @@ ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
   geom_text(aes(label = value)) +
   ggtitle("Correlation Plot of Sample Data")
 ```
+
+### Now we examine relation across various columns 
+
+```{r}
+df
+```
+
+```{r}
+df <- df %>% 
+  mutate(Total_Purchaase = MntWines + MntFruits + MntMeatProducts + MntFishProducts + MntSweetProducts + MntSweetProducts + MntGoldProds)
+```
+
+```{r}
+df %>% 
+  group_by(Marital_Status) %>% 
+  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
+  ggplot(aes(x = Marital_Status, y = Total_Purchase_by_Marital)) +
+  geom_col(fill = "#1f77b7") + 
+  theme_minimal()
+  
+```
+We see a graph equivalent to the proportion of the population so there is no particular purchasing more
+
+```{r}
+df %>% 
+  group_by(Age) %>% 
+  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
+  ggplot(aes(x = Age, y = Total_Purchase_by_Marital)) +
+  geom_area(fill = "#1f77b7") + 
+  theme_minimal()
+```
+
+```{r}
+df %>% 
+  group_by(Income) %>% 
+  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
+  ggplot(aes(x = Income, y = Total_Purchase_by_Marital)) +
+  geom_point(color = "#1f77b7", size = 2) + 
+  theme_minimal()
+```
+We see a non-lionear
 
