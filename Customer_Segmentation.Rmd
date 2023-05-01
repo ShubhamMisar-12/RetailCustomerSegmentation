@@ -18,17 +18,18 @@ When you click the **Knit** button a document will be generated that includes bo
 library(dplyr)
 library(ggplot2)
 library(GGally)
-
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
 df <- read.csv('./Customer_Data.csv')
 df
 ```
+
+## EDA
+
+
+
 
 ```{r}
 sum(is.na(df))
@@ -410,7 +411,8 @@ df <- df %>%
 
 ```{r}
 features <- df %>% 
-  select(Age, Has_Partner, Is_Parent, Family_Size, Education, Income, Recency, campaign_participation, Total_Purchaase, MntWines, MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, MntGoldProds)
+  select(Age, Has_Partner, Is_Parent, Family_Size, Education, Income, Recency, campaign_participation, Total_Purchaase
+         )
 ```
 
 
@@ -440,10 +442,34 @@ pca <- prcomp(features_scaled)
 ```
 
 ```{r}
+pca
+```
+
+
+```{r}
 screeplot(pca)
 ```
 ```{r}
+ggbiplot(pca)
 
+```
+```{r}
+pr.var <- pca$sdev^2
+pr.var
+```
+
+```{r chunk14}
+pve <- 100 * pr.var/ sum(pr.var)
+pve
+```
+```{r}
+par(mfrow = c(1, 2))
+plot(pve, xlab = "Principal Component",
+    ylab = "Proportion of Variance Explained",
+    type = "b")
+plot(cumsum(pve), xlab = "Principal Component",
+    ylab = "Cumulative Proportion of Variance Explained",
+     type = "b")
 ```
 
 
@@ -461,7 +487,8 @@ p
 ```
 
 ```{r}
-km <- kmeans(pca$x[,1:3], 3)
+km <- kmeans(pca$x[,1:3], 5
+             )
 
 # Add cluster assignment to the pca object
 pca$cluster <- as.factor(km$cluster)
