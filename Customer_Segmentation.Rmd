@@ -261,9 +261,6 @@ ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
 
 ### Now we examine relation across various columns 
 
-```{r}
-df 
-```
 
 ```{r}
 df <- df %>% 
@@ -407,11 +404,30 @@ df <- df %>%
 ```
 
 ```{r}
+df <- df %>% 
+  mutate(campaign_participation = ifelse(AcceptedCmp3 + AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp4 + AcceptedCmp5 + Response > 0, 1,0) )
+```
 
+```{r}
+features <- df %>% 
+  select(Age, Has_Partner, Is_Parent, Family_Size, Education, Income, Recency, campaign_participation, Total_Purchaase, MntWines, MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, MntGoldProds)
 ```
 
 
 
+```{r}
+features
+```
 
+```{r}
+features$Education = factor(features$Education, levels = c("Undergraduate", "Graduate", "Postgraduate"))
+```
 
+```{r}
+features$Education
+```
+```{r}
+features %>%
+  scale()
+```
 
