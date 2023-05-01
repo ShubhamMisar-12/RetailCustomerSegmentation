@@ -331,6 +331,7 @@ We Create following features for Data Modelling
 3. Is_Parent: If customer has kids home
 4. Education: Undergraduate, Graduate, Post-Graduate 
 5. Has_Partner: If living with someone.
+6. Family Size
 
 
 ```{r}
@@ -360,8 +361,55 @@ We see parents who have kids have spent relative more given then proportion in d
 
 
 ```{r}
+df <- df %>%
+  mutate(Education = case_when(
+    Education == "Basic" ~ "Undergraduate",
+    Education == "2n Cycle" ~ "Undergraduate",
+    Education == "Graduation" ~ "Graduate",
+    Education == "Master" ~ "Postgraduate",
+    Education == "PhD" ~ "Postgraduate",
+    TRUE ~ Education  # Keep the original value if none of the above conditions match
+  ))
+```
+
+
+
+```{r}
+df %>% 
+  ggplot(aes(x = Education, y = Total_Purchaase)) +
+  geom_col(fill = "#1f77b7")+
+  theme_minimal()
+
+
+df %>% 
+  ggplot(aes(x = Education)) +
+  geom_bar()
+```
+
+```{r}
+df <- df %>%
+  mutate(Has_Partner = case_when(
+    Marital_Status %in% c("Married", "Together") ~ 1,
+    Marital_Status %in% c("Absurd", "Widow", "YOLO", "Divorced", "Single") ~ 0
+  ))
+```
+
+```{r}
+df$Teenhome <- as.integer(df$Teenhome)
+df$Kidhome <- as.integer(df$Kidhome)
+df$Has_Partner <- as.integer(df$Has_Partner)
+```
+
+
+```{r}
+df <- df %>% 
+  mutate(Family_Size = Kidhome + Teenhome + Has_Partner)
+```
+
+```{r}
 
 ```
+
 
 
 
