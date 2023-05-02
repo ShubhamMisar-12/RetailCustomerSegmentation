@@ -452,9 +452,10 @@ df %>%
 df <- df %>%
   mutate(Has_Partner = case_when(
     Marital_Status %in% c("Married", "Together") ~ 1,
-    Marital_Status %in% c("Absurd", "Widow", "YOLO", "Divorced", "Single") ~ 0
+    Marital_Status %in% c("Absurd", "Widow", "YOLO", "Divorced", "Single", "Alone") ~ 0
   ))
 ```
+
 
 ```{r}
 df$Teenhome <- as.integer(df$Teenhome)
@@ -473,6 +474,8 @@ df <- df %>%
   mutate(campaign_participation = ifelse(AcceptedCmp3 + AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp4 + AcceptedCmp5 + Response > 0, 1,0) )
 ```
 
+
+
 ```{r}
 features <- df %>% 
   select(Age, Has_Partner, Is_Parent, Family_Size, Education, Income, Recency, campaign_participation, Total_Purchaase
@@ -486,23 +489,18 @@ features
 ```
 
 ```{r}
-features$Education = as.integer(factor(features$Education, levels = c("Undergraduate", "Graduate", "Postgraduate")))
+str(features)
 ```
-
-
 ```{r}
-features_scaled <- features %>%
-  scale()
+features$Education <- as.integer(factor(features$Education, levels = c("Postgraduate","Graduate", "Undergraduate")))
 ```
 
 ```{r}
-features_scaled <- na.omit(features_scaled)
-
+features
 ```
 
-
 ```{r}
-pca <- prcomp(features_scaled)
+pca <- prcomp(features, scale = TRUE)
 ```
 
 ```{r}
@@ -584,5 +582,133 @@ p
 ```
 
 
+```{r}
+df <- df %>% 
+  mutate(cluster = as.factor(km$cluster))
+```
 
+
+## Profiling
+
+```{r}
+
+ggplot(df, aes(x = cluster)) +
+  geom_bar(fill = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  ggtitle("Distribution Of The Clusters")+
+  theme_minimal()
+
+
+
+```
+
+
+
+
+
+
+```{r}
+
+ggplot(df, aes(x = Total_Purchaase, y = Income, color = cluster)) +
+  geom_point() +
+  scale_color_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  ggtitle("Cluster's Profile Based On Income And Spending") +
+  xlab("Total Purchase") +
+  ylab("Income")+
+  guides(color = guide_legend(title = "Clusters"))+
+  theme_minimal()
+
+
+
+```
+
+```{r}
+df$
+```
+
+
+```{r}
+
+ggplot(df, aes(x = cluster, y = Total_Purchaase)) +
+  geom_point(size = 1,color = "#1f77b7", alpha = 0.5) +
+  geom_boxplot(aes(fill = cluster), color = "black", outlier.shape = NA) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  ggtitle("Cluster's Spending Distribution") +
+  xlab("Clusters") +
+  ylab("Spending")
+
+
+```
+```{r}
+df %>% 
+mutate(Total_Promos = AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp3 + AcceptedCmp4 + AcceptedCmp5) %>% 
+  ggplot(aes(x = Total_Promos, fill = factor(cluster))) +
+  geom_bar(position ="dodge", alpha = 0.8) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  ggtitle("Count Of Promotion Accepted") +
+  xlab("Number Of Total Accepted Promotions") +
+  ylab("Count")
+
+
+```
+```{r}
+ggplot(df, aes(x = factor(cluster), y = NumDealsPurchases, fill = factor(cluster))) +
+  geom_boxplot(alpha = 0.8) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  ggtitle("Number of Deals Purchased") +
+  xlab("Clusters") +
+  ylab("Number of Deals Purchased")
+
+```
+
+```{r}
+df %>% 
+  group_by(cluster) %>% 
+  summarise(Wines = mean(MntWines), Fruits = mean(MntFruits), Meat = mean(MntMeatProducts), Fish = mean(MntFishProducts), Sweet = mean(MntSweetProducts), gold = mean(MntGoldProds)) %>% 
+  ggplot(aes(x = cluster)) +
+  geom_bar(aes(y = Wines, fill = "Wines"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Fruits, fill = "Fruits"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Meat, fill = "Meat"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Fish, fill = "Fish"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Sweet, fill = "Sweet"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = gold, fill = "Gold"), stat = "identity", alpha = 0.7) +
+  scale_fill_manual(values = c("Wines" = "#1F77B4", "Fruits" = "#FF7F0E", "Meat" = "#2CA02C", "Fish" = "#D62728", "Sweet" = "#9467BD", "Gold" = "#8C564B")) +
+  labs(title = "Average Spending on Product Categories by Cluster",
+       x = "Cluster",
+       y = "Average Spending",
+       fill = "Type of Product")+
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+```{r}
+ggplot(df, aes(Teenhome, fill = cluster)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  theme_minimal()
+```
+
+```{r}
+ggplot(df, aes(Kidhome, fill = cluster)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  theme_minimal()
+```
+```{r}
+ggplot(df, aes(Family_Size, fill = cluster)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  theme_minimal()
+```
+```{r}
+ggplot(df, aes(Education, fill = cluster)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  theme_minimal()
+```
+
+```{r}
+ggplot(df, aes(Has_Partner, fill = cluster)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  theme_minimal()
+```
 
