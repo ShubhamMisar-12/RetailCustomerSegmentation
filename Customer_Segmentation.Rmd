@@ -1,7 +1,8 @@
 ---
 title: "CustomerSegmentation"
 output: html_document
-date: "2023-04-29"
+date: "2023-05-02"
+auther: Shubham Sanjay Misar
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +21,6 @@ library(ggplot2)
 library(GGally)
 ```
 
-
 ```{r pressure, echo=FALSE}
 df <- read.csv('./Customer_Data.csv')
 df
@@ -28,19 +28,17 @@ df
 
 ## EDA
 
-
 ```{r}
 sum(is.na(df))
 ```
-There are 24 NULL values in our data we will examine those as we go along
 
+There are 24 NULL values in our data we will examine those as we go along
 
 ```{r}
 df[duplicated(df)]
 ```
 
-There are no duplicate rows 
-
+There are no duplicate rows
 
 ```{r}
 df <- df %>% 
@@ -66,7 +64,6 @@ df %>%
 
 seems like they are erroneous entries
 
-
 #### Marital Status
 
 ```{r}
@@ -89,8 +86,8 @@ ggplot(df, aes(x = Income)) +
   scale_x_continuous(breaks = seq(5000, 100000, by=  40000))+
   theme_minimal()
 ```
-There is an outlier in data where we see a very large income, to see the distribution clearly lets filter our data
 
+There is an outlier in data where we see a very large income, to see the distribution clearly lets filter our data
 
 ```{r}
 df %>% 
@@ -103,8 +100,8 @@ df %>%
   scale_x_continuous(breaks = seq(5000, 200000, by=  20000))+
   theme_minimal()
 ```
-There are few data points with income greater than 85000 lets call them high income group while rest looks to in the range 19000 - 70000
 
+There are few data points with income greater than 85000 lets call them high income group while rest looks to in the range 19000 - 70000
 
 ```{r fig.width=20}
 ggplot(df, aes(x = "", y = Income)) + 
@@ -120,7 +117,6 @@ ggplot(df, aes(x = "", y = Income)) +
 
 ```
 
-
 ## Inspecting the missing data
 
 ```{r}
@@ -133,13 +129,12 @@ summary(df)
 
 The missing values seems to have occurred at random as there are 24 missing values which is 1% of the total data, we can omit those values.
 
-
 ```{r}
 df <- na.omit(df)
 sum(is.na(df))
 ```
 
-Formatting Date column 
+Formatting Date column
 
 ```{r}
 df %>% 
@@ -150,7 +145,6 @@ df %>%
 df<- df %>% 
   mutate(Dt_Customer = gsub("/", "-", Dt_Customer))
 ```
-
 
 ```{r}
 df<- df %>% 
@@ -163,13 +157,12 @@ summary(df$Dt_Customer)
 
 Calculating Ages by taking the maximum Date
 
-
 #### Age
+
 ```{r}
 df <- df %>% 
   mutate(Age = 2014 - Year_Birth)
 ```
-
 
 ```{r}
 ggplot(df, aes(x = Age)) +
@@ -179,7 +172,6 @@ ggplot(df, aes(x = Age)) +
        title = "Distribution of Age")
 ```
 
-
 ```{r}
 df %>% 
   filter(Income != 666666) %>% 
@@ -187,7 +179,8 @@ ggplot(aes(x = Age, y = Income) )+
 geom_point(color = "#0072B2", size = 2)+
 theme_minimal()
 ```
-There is no any evident pattern 
+
+There is no any evident pattern
 
 Removing Ouliter from data for Income and capping max age to 70
 
@@ -197,14 +190,11 @@ df<- df %>%
   mutate(Age = ifelse(Age > 70, 70, Age))
 ```
 
-
 #### Checking Correlation between amount of product bought
-
 
 ```{r}
 df_product <- df[,c("MntWines","MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds")]
 ```
-
 
 ```{r}
 
@@ -222,8 +212,8 @@ ggcorrplot(corr_mat_products, hc.order = TRUE) +
 ggpairs(df_product) + 
   theme_minimal()
 ```
-No significant relation Present between products
 
+No significant relation Present between products
 
 ```{r}
 df_gateway <- df[,c("NumDealsPurchases", "NumStorePurchases", "NumWebPurchases", "NumCatalogPurchases", "NumWebVisitsMonth")]
@@ -246,8 +236,8 @@ corr_mat_campaign <- cor(df_campaign)
 ggpairs(df_gateway) + 
   theme_minimal()
 ```
-No Significant Relation present
 
+No Significant Relation present
 
 ```{r}
 ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
@@ -256,10 +246,10 @@ ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
   ggtitle("Correlation Plot of Sample Data")
 ```
 
-#### Now we examine relation across various columns 
-
+#### Now we examine relation across various columns
 
 Creating variable Total Purchase which has all product purchased
+
 ```{r}
 df <- df %>% 
   mutate(Total_Purchaase = MntWines + MntFruits + MntMeatProducts + MntFishProducts + MntSweetProducts + MntSweetProducts + MntGoldProds)
@@ -274,6 +264,7 @@ df %>%
   theme_minimal()
   
 ```
+
 We see a graph equivalent to the proportion of the population so there is no particular group purchasing more.
 
 Now we see across each product
@@ -286,7 +277,6 @@ df %>%
   geom_col(fill = "#1f77b7") + 
   theme_minimal()
 ```
-
 
 ```{r}
 df %>% 
@@ -308,7 +298,9 @@ df %>%
   theme(legend.position = "right")
 
 ```
-Wine is most common entity bought 
+
+Wine is most common entity bought
+
 ```{r}
 df %>% 
   group_by(Income) %>% 
@@ -317,7 +309,8 @@ df %>%
   geom_point(color = "#1f77b7", size = 2) + 
   theme_minimal()
 ```
-We see a non-linear relationship between Income and Total Purchase 
+
+We see a non-linear relationship between Income and Total Purchase
 
 ```{r}
 df %>% 
@@ -335,9 +328,8 @@ df %>%
   theme(legend.position = "right")
 
 ```
+
 Wine is the most popular followed by by meat for average income households.
-
-
 
 ```{r}
 df %>% 
@@ -354,9 +346,8 @@ df %>%
   theme_minimal() +
   theme(legend.position = "right")
 ```
+
 Wine consumption increases over age. Whereas we see meat consumption beign high in early ages.
-
-
 
 ```{r}
 df %>% 
@@ -377,24 +368,21 @@ df %>%
   theme_minimal() +
   theme(legend.position = "right")
 ```
+
 PhDs consume more wine also the fact they are older validates the the relation with age
-
-
 
 ## Feature Engineering
 
-
 We Create following features for Data Modelling
 
-1. Age (already Created)
-2. Total Purchase (Already Created) : Spending sum on all goods
-3. Is_Parent: If customer has kids home
-4. Education: Undergraduate, Graduate, Post-Graduate 
-5. Has_Partner: If living with someone.
-6. Family Size:
-7. Active Days: Number of days since enrollment to last buys.
-8. Campaign: If Participated in campaign.
-
+1.  Age (already Created)
+2.  Total Purchase (Already Created) : Spending sum on all goods
+3.  Is_Parent: If customer has kids home
+4.  Education: Undergraduate, Graduate, Post-Graduate
+5.  Has_Partner: If living with someone.
+6.  Family Size:
+7.  Active Days: Number of days since enrollment to last buys.
+8.  Campaign: If Participated in campaign.
 
 ```{r}
 df %>% 
@@ -405,7 +393,6 @@ df %>%
 df <- df %>% 
   mutate(Is_Parent = ifelse(Kidhome + Teenhome > 0, 1, 0)) 
 ```
-
 
 ```{r}
 df %>% 
@@ -419,8 +406,8 @@ df %>%
   theme_minimal()
 
 ```
-We see parents who have kids have spent relative more given then proportion in data.
 
+We see parents who have kids have spent relative more given then proportion in data.
 
 ```{r}
 df <- df %>%
@@ -433,8 +420,6 @@ df <- df %>%
     TRUE ~ Education  # Keep the original value if none of the above conditions match
   ))
 ```
-
-
 
 ```{r}
 df %>% 
@@ -456,13 +441,11 @@ df <- df %>%
   ))
 ```
 
-
 ```{r}
 df$Teenhome <- as.integer(df$Teenhome)
 df$Kidhome <- as.integer(df$Kidhome)
 df$Has_Partner <- as.integer(df$Has_Partner)
 ```
-
 
 ```{r}
 df <- df %>% 
@@ -474,15 +457,11 @@ df <- df %>%
   mutate(campaign_participation = ifelse(AcceptedCmp3 + AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp4 + AcceptedCmp5 + Response > 0, 1,0) )
 ```
 
-
-
 ```{r}
 features <- df %>% 
   select(Age, Has_Partner, Is_Parent, Family_Size, Education, Income, Recency, campaign_participation, Total_Purchaase
          )
 ```
-
-
 
 ```{r}
 features
@@ -491,6 +470,7 @@ features
 ```{r}
 str(features)
 ```
+
 ```{r}
 features$Education <- as.integer(factor(features$Education, levels = c("Postgraduate","Graduate", "Undergraduate")))
 ```
@@ -498,6 +478,8 @@ features$Education <- as.integer(factor(features$Education, levels = c("Postgrad
 ```{r}
 features
 ```
+
+## PCA
 
 ```{r}
 pca <- prcomp(features, scale = TRUE)
@@ -507,20 +489,15 @@ pca <- prcomp(features, scale = TRUE)
 pca
 ```
 
-
 ```{r}
 screeplot(pca)
 ```
 
 ```{r}
 pr.var <- pca$sdev^2
-pr.var
+pve <- 100 * pr.var/ sum(pr.var)
 ```
 
-```{r chunk14}
-pve <- 100 * pr.var/ sum(pr.var)
-pve
-```
 ```{r}
 par(mfrow = c(1, 2))
 plot(pve, xlab = "Principal Component",
@@ -531,6 +508,9 @@ plot(cumsum(pve), xlab = "Principal Component",
      type = "b")
 ```
 
+3 Principle component is good choice as it contributes to about 69% of the variation and there is an elbow point at 3,
+
+## Clustering
 
 ```{r}
 library(plotly)
@@ -545,14 +525,12 @@ p
 
 ```
 
-
 ```{r}
 set.seed(1)
 fviz_nbclust(pca$x[,1:3], kmeans, method = "wss",k.max=10, nstart=20, iter.max=20) +
   geom_vline(xintercept = 4, linetype = 4)+
   labs(subtitle = "Elbow method")
 ```
-
 
 ```{r message = False}
 set.seed(1)
@@ -561,10 +539,11 @@ gap_kmeans <- clusGap(pca$x[,1:3], kmeans, nstart = 20, K.max = 10, B = 100)
 plot(gap_kmeans, main = "Gap Statistic: kmeans")
 ```
 
+So, 4 seems like a good choice as the values post that do not add much to the curves.
+
 ```{r}
 km <- kmeans(pca$x[,1:3], 4)
 ```
-
 
 ```{r}
 # Add cluster assignment to the pca object
@@ -581,12 +560,10 @@ p
 
 ```
 
-
 ```{r}
 df <- df %>% 
   mutate(cluster = as.factor(km$cluster))
 ```
-
 
 ## Profiling
 
@@ -601,10 +578,7 @@ ggplot(df, aes(x = cluster)) +
 
 ```
 
-
-
-
-
+Evenly distributed size of each cluster
 
 ```{r}
 
@@ -621,10 +595,7 @@ ggplot(df, aes(x = Total_Purchaase, y = Income, color = cluster)) +
 
 ```
 
-```{r}
-df$
-```
-
+Green is high income while yellow is low income
 
 ```{r}
 
@@ -638,6 +609,9 @@ ggplot(df, aes(x = cluster, y = Total_Purchaase)) +
 
 
 ```
+
+Green have high spending while yellow has low
+
 ```{r}
 df %>% 
 mutate(Total_Promos = AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp3 + AcceptedCmp4 + AcceptedCmp5) %>% 
@@ -650,6 +624,9 @@ mutate(Total_Promos = AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp3 + AcceptedCmp4 
 
 
 ```
+
+The later campaign were most appealed to green cluster
+
 ```{r}
 ggplot(df, aes(x = factor(cluster), y = NumDealsPurchases, fill = factor(cluster))) +
   geom_boxplot(alpha = 0.8) +
@@ -659,6 +636,8 @@ ggplot(df, aes(x = factor(cluster), y = NumDealsPurchases, fill = factor(cluster
   ylab("Number of Deals Purchased")
 
 ```
+
+green did not get too many deals
 
 ```{r}
 df %>% 
@@ -679,6 +658,9 @@ df %>%
   theme_minimal() +
   theme(legend.position = "right")
 ```
+
+green consumes more meat
+
 ```{r}
 ggplot(df, aes(Teenhome, fill = cluster)) +
   geom_density(alpha = 0.5) +
@@ -686,18 +668,33 @@ ggplot(df, aes(Teenhome, fill = cluster)) +
   theme_minimal()
 ```
 
+Red is a parent for sure while green isn't
+
 ```{r}
 ggplot(df, aes(Kidhome, fill = cluster)) +
   geom_density(alpha = 0.5) +
   scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
   theme_minimal()
 ```
+
+Green doesn't have kid
+
 ```{r}
 ggplot(df, aes(Family_Size, fill = cluster)) +
   geom_density(alpha = 0.5) +
   scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
   theme_minimal()
 ```
+
+Red and Yellow are definitely have family while green and blue seem they don't
+
+```{r}
+ggplot(df, aes(Age, fill = cluster)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
+  theme_minimal()
+```
+
 ```{r}
 ggplot(df, aes(Education, fill = cluster)) +
   geom_density(alpha = 0.5) +
@@ -705,10 +702,41 @@ ggplot(df, aes(Education, fill = cluster)) +
   theme_minimal()
 ```
 
+No Particular specific conclusion can be drawn
+
 ```{r}
 ggplot(df, aes(Has_Partner, fill = cluster)) +
   geom_density(alpha = 0.5) +
   scale_fill_manual(values = c("#3366CC", "#DC3912", "#FF9900", "#109618")) +
   theme_minimal()
 ```
+
+Red and Yellow have a partner while blue mostly doesn't and nothing conclusive could be said about green.
+
+## Conclusion
+
+### Cluster 1 - Blue
+Mostly Single
+Mostly Not a Parent
+Age-wise they are somewhere 30-60
+Mid to High Income Group
+
+### Cluster 2 - Red
+They are parents 
+They have a Partner
+Average Income Group
+Are Older
+
+### Cluster 3 - Yellow
+Mostly have a partner
+They are parent
+Low Income Group
+Are Younger than other groups (30-40)
+
+### Cluster 4 - Green
+Good Proportion of them have a Partner
+Are not Parent
+High Income Group
+Age-wise they are distributed evenly
+
 
