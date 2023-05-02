@@ -716,27 +716,17 @@ Red and Yellow have a partner while blue mostly doesn't and nothing conclusive c
 ## Conclusion
 
 ### Cluster 1 - Blue
-Mostly Single
-Mostly Not a Parent
-Age-wise they are somewhere 30-60
-Mid to High Income Group
+
+Mostly Single \n Mostly Not a Parent \n Age-wise they are somewhere 30-60 \n Mid to High Income Group
 
 ### Cluster 2 - Red
-They are parents 
-They have a Partner
-Average Income Group
-Are Older
+
+They are parents \n They have a Partner \n Average Income Group \n Are Older
 
 ### Cluster 3 - Yellow
-Mostly have a partner
-They are parent
-Low Income Group
-Are Younger than other groups (30-40)
+
+Mostly have a partner \n They are parent \n Low Income Group Are \n Younger than other groups (30-40)
 
 ### Cluster 4 - Green
-Good Proportion of them have a Partner
-Are not Parent
-High Income Group
-Age-wise they are distributed evenly
 
-
+Good Proportion of them have a Partner \n Are not Parent \n High Income Group \n Age-wise they are distributed evenly
