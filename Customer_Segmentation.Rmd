@@ -29,18 +29,17 @@ df
 ## EDA
 
 
-
-
 ```{r}
 sum(is.na(df))
 ```
+There are 24 NULL values in our data we will examine those as we go along
 
-
-## EDA
 
 ```{r}
 df[duplicated(df)]
 ```
+
+There are no duplicate rows 
 
 
 ```{r}
@@ -48,11 +47,7 @@ df <- df %>%
   select(-ID)
 ```
 
-
-```{r}
-df
-```
-
+#### Birth Year
 
 ```{r}
 ggplot(df, aes(x=Year_Birth))+ 
@@ -71,6 +66,9 @@ df %>%
 
 seems like they are erroneous entries
 
+
+#### Marital Status
+
 ```{r}
 ggplot(df, aes(Marital_Status)) +
   geom_bar(fill = "#1f77b7", alpha = 0.8) + 
@@ -79,6 +77,8 @@ ggplot(df, aes(Marital_Status)) +
         title = "Frequency plot for marital status")+
   theme_minimal()
 ```
+
+#### Income
 
 ```{r}
 ggplot(df, aes(x = Income)) + 
@@ -136,9 +136,6 @@ The missing values seems to have occurred at random as there are 24 missing valu
 
 ```{r}
 df <- na.omit(df)
-```
-
-```{r}
 sum(is.na(df))
 ```
 
@@ -167,6 +164,7 @@ summary(df$Dt_Customer)
 Calculating Ages by taking the maximum Date
 
 
+#### Age
 ```{r}
 df <- df %>% 
   mutate(Age = 2014 - Year_Birth)
@@ -180,6 +178,8 @@ ggplot(df, aes(x = Age)) +
        y = "count",
        title = "Distribution of Age")
 ```
+
+
 ```{r}
 df %>% 
   filter(Income != 666666) %>% 
@@ -189,7 +189,7 @@ theme_minimal()
 ```
 There is no any evident pattern 
 
-### Removing Ouliter from data for Income and capping max age to 70
+Removing Ouliter from data for Income and capping max age to 70
 
 ```{r}
 df<- df %>% 
@@ -198,15 +198,7 @@ df<- df %>%
 ```
 
 
-```{r}
-summary(df$Age)
-```
-
-```{r}
-summary(df$Income)
-```
-
-### Checking Correlation between amount of product bought
+#### Checking Correlation between amount of product bought
 
 
 ```{r}
@@ -220,14 +212,17 @@ library(ggcorrplot)
 
 corr_mat_products <- cor(df_product)
 
-# Create the correlation plot using ggcorrplot
 ggcorrplot(corr_mat_products, hc.order = TRUE) +
   theme(plot.title = element_text(hjust = 0.8)) +
   geom_text(aes(label = value)) +
-  ggtitle("Correlation Plot of Sample Data")
+  ggtitle("Correlation Plot for Product bought")
 ```
 
-No Correlation Present between products
+```{r, message=FALSE}
+ggpairs(df_product) + 
+  theme_minimal()
+```
+No significant relation Present between products
 
 
 ```{r}
@@ -236,21 +231,22 @@ df_gateway <- df[,c("NumDealsPurchases", "NumStorePurchases", "NumWebPurchases",
 
 ```{r}
 corr_mat_gtwy <- cor(df_gateway)
-```
 
-
-```{r}
-# Create the correlation plot using ggcorrplot
 ggcorrplot(corr_mat_gtwy, hc.order = TRUE) +
   theme(plot.title = element_text(hjust = 0.8)) +
   geom_text(aes(label = value)) +
   ggtitle("Correlation Plot of Sample Data")
-```
-```{r}
+
 df_campaign <- df[,c("AcceptedCmp1", "AcceptedCmp2", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5")]
 corr_mat_campaign <- cor(df_campaign)
 
 ```
+
+```{r, message=FALSE}
+ggpairs(df_gateway) + 
+  theme_minimal()
+```
+No Significant Relation present
 
 
 ```{r}
@@ -260,9 +256,10 @@ ggcorrplot(corr_mat_campaign, hc.order = TRUE) +
   ggtitle("Correlation Plot of Sample Data")
 ```
 
-### Now we examine relation across various columns 
+#### Now we examine relation across various columns 
 
 
+Creating variable Total Purchase which has all product purchased
 ```{r}
 df <- df %>% 
   mutate(Total_Purchaase = MntWines + MntFruits + MntMeatProducts + MntFishProducts + MntSweetProducts + MntSweetProducts + MntGoldProds)
@@ -271,55 +268,120 @@ df <- df %>%
 ```{r}
 df %>% 
   group_by(Marital_Status) %>% 
-  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
+  summarise(Total_Purchase_by_Marital = mean(Total_Purchaase)) %>% 
   ggplot(aes(x = Marital_Status, y = Total_Purchase_by_Marital)) +
   geom_col(fill = "#1f77b7") + 
   theme_minimal()
   
 ```
-We see a graph equivalent to the proportion of the population so there is no particular purchasing more
+We see a graph equivalent to the proportion of the population so there is no particular group purchasing more.
+
+Now we see across each product
 
 ```{r}
 df %>% 
-  group_by(Age) %>% 
+  group_by(Marital_Status) %>% 
   summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
-  ggplot(aes(x = Age, y = Total_Purchase_by_Marital)) +
-  geom_area(fill = "#1f77b7") + 
+  ggplot(aes(x = Marital_Status, y = Total_Purchase_by_Marital)) +
+  geom_col(fill = "#1f77b7") + 
   theme_minimal()
 ```
 
+
+```{r}
+df %>% 
+  group_by(Marital_Status) %>% 
+  summarise(Wines = mean(MntWines), Fruits = mean(MntFruits), Meat = mean(MntMeatProducts), Fish = mean(MntFishProducts), Sweet = mean(MntSweetProducts), gold = mean(MntGoldProds)) %>% 
+  ggplot(aes(x = Marital_Status)) +
+  geom_bar(aes(y = Wines, fill = "Wines"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Fruits, fill = "Fruits"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Meat, fill = "Meat"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Fish, fill = "Fish"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Sweet, fill = "Sweet"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = gold, fill = "Gold"), stat = "identity", alpha = 0.7) +
+  scale_fill_manual(values = c("Wines" = "#1F77B4", "Fruits" = "#FF7F0E", "Meat" = "#2CA02C", "Fish" = "#D62728", "Sweet" = "#9467BD", "Gold" = "#8C564B")) +
+  labs(title = "Average Spending on Product Categories by Marital Status",
+       x = "Marital Status",
+       y = "Average Spending",
+       fill = "Type of Product")+
+  theme_minimal() +
+  theme(legend.position = "right")
+
+```
+Wine is most common entity bought 
 ```{r}
 df %>% 
   group_by(Income) %>% 
-  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
+  summarise(Total_Purchase_by_Marital = mean(Total_Purchaase)) %>% 
   ggplot(aes(x = Income, y = Total_Purchase_by_Marital)) +
   geom_point(color = "#1f77b7", size = 2) + 
   theme_minimal()
 ```
 We see a non-linear relationship between Income and Total Purchase 
 
+```{r}
+df %>% 
+  group_by(Income) %>% 
+  summarise(Wines = mean(MntWines), Fruits = mean(MntFruits), Meat = mean(MntMeatProducts), Fish = mean(MntFishProducts), Sweet = mean(MntSweetProducts), gold = mean(MntGoldProds)) %>% 
+  ggplot(aes(x = Income)) +
+  geom_point(aes(y = Wines, color = "Wines"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Fruits, color = "Fruits"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Meat, color = "Meat"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Fish, color = "Fish"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Sweet, color = "Sweet"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = gold, color = "Gold Prods"), alpha = 0.7, size = 2) +
+  scale_color_manual(name = "Products", values = c("Wines" = "#E69F00", "Fruits" = "#56B4E9", "Meat" = "#009E73", "Fish" = "#0072B2", "Sweet" = "#D55E00", "Gold Prods" = "#CC79A7")) +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+```
+Wine is the most popular followed by by meat for average income households.
+
+
 
 ```{r}
-par(mfrow = c(2,1))
+df %>% 
+  group_by(Age) %>% 
+  summarise(Wines = mean(MntWines), Fruits = mean(MntFruits), Meat = mean(MntMeatProducts), Fish = mean(MntFishProducts), Sweet = mean(MntSweetProducts), gold = mean(MntGoldProds)) %>% 
+  ggplot(aes(x = Age)) +
+  geom_point(aes(y = Wines, color = "Wines"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Fruits, color = "Fruits"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Meat, color = "Meat"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Fish, color = "Fish"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = Sweet, color = "Sweet"), alpha = 0.7, size = 2) +
+  geom_point(aes(y = gold, color = "Gold Prods"), alpha = 0.7, size = 2) +
+  scale_color_manual(name = "Products", values = c("Wines" = "#E69F00", "Fruits" = "#56B4E9", "Meat" = "#009E73", "Fish" = "#0072B2", "Sweet" = "#D55E00", "Gold Prods" = "#CC79A7")) +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+Wine consumption increases over age. Whereas we see meat consumption beign high in early ages.
 
+
+
+```{r}
 df %>% 
   group_by(Education) %>% 
-  summarise(Total_Purchase_by_Marital = sum(Total_Purchaase)) %>% 
-  ggplot(aes(x = Education, y = Total_Purchase_by_Marital)) +
-  geom_col(fill = "#1f77b7") + 
-  theme_minimal()+
-  labs(x = "Education",
-       y = "Total Purchase") 
-  
-df %>% 
-  ggplot(aes(x = Education) )+ 
-  geom_bar()
+  summarise(Wines = mean(MntWines), Fruits = mean(MntFruits), Meat = mean(MntMeatProducts), Fish = mean(MntFishProducts), Sweet = mean(MntSweetProducts), gold = mean(MntGoldProds)) %>% 
+  ggplot(aes(x = Education)) +
+  geom_bar(aes(y = Wines, fill = "Wines"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Fruits, fill = "Fruits"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Meat, fill = "Meat"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Fish, fill = "Fish"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = Sweet, fill = "Sweet"), stat = "identity", alpha = 0.7) +
+  geom_bar(aes(y = gold, fill = "Gold"), stat = "identity", alpha = 0.7) +
+  scale_fill_manual(values = c("Wines" = "#1F77B4", "Fruits" = "#FF7F0E", "Meat" = "#2CA02C", "Fish" = "#D62728", "Sweet" = "#9467BD", "Gold" = "#8C564B")) +
+  labs(title = "Average Spending on Product Categories by Education",
+       x = "Education",
+       y = "Average Spending",
+       fill = "Type of Product")+
+  theme_minimal() +
+  theme(legend.position = "right")
 ```
-Similar proportion in Buying
+PhDs consume more wine also the fact they are older validates the the relation with age
 
 
 
-### Feature Engineering
+## Feature Engineering
 
 
 We Create following features for Data Modelling
@@ -329,7 +391,9 @@ We Create following features for Data Modelling
 3. Is_Parent: If customer has kids home
 4. Education: Undergraduate, Graduate, Post-Graduate 
 5. Has_Partner: If living with someone.
-6. Family Size
+6. Family Size:
+7. Active Days: Number of days since enrollment to last buys.
+8. Campaign: If Participated in campaign.
 
 
 ```{r}
@@ -449,10 +513,7 @@ pca
 ```{r}
 screeplot(pca)
 ```
-```{r}
-ggbiplot(pca)
 
-```
 ```{r}
 pr.var <- pca$sdev^2
 pr.var
@@ -486,10 +547,28 @@ p
 
 ```
 
-```{r}
-km <- kmeans(pca$x[,1:3], 5
-             )
 
+```{r}
+set.seed(1)
+fviz_nbclust(pca$x[,1:3], kmeans, method = "wss",k.max=10, nstart=20, iter.max=20) +
+  geom_vline(xintercept = 4, linetype = 4)+
+  labs(subtitle = "Elbow method")
+```
+
+
+```{r message = False}
+set.seed(1)
+gap_kmeans <- clusGap(pca$x[,1:3], kmeans, nstart = 20, K.max = 10, B = 100)
+
+plot(gap_kmeans, main = "Gap Statistic: kmeans")
+```
+
+```{r}
+km <- kmeans(pca$x[,1:3], 4)
+```
+
+
+```{r}
 # Add cluster assignment to the pca object
 pca$cluster <- as.factor(km$cluster)
 
@@ -503,4 +582,7 @@ p <- plot_ly(x = pca$x[,1], y = pca$x[,2], z = pca$x[,3], type = "scatter3d",
 p
 
 ```
+
+
+
 
