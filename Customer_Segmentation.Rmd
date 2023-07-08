@@ -12,6 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+library(ggplot2)
+```
+
+
+```{r}
 if (!require("ISLR2")) install.packages("ISLR2")
 if (!require("cluster")) install.packages("cluster")
 
