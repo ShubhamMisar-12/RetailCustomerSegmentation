@@ -13,7 +13,16 @@ The dataset used for this project includes various attributes related to custome
    - Explored the relationship between different attributes and identified key variables for segmentation.
 
 2. Feature Engineering:
-   - Created additional features to enhance the dataset for modeling purposes, capturing relevant aspects such as age, total purchase amount, presence of children, education level, partnership status, family size, active days, and campaign participation.
+   - Created additional features to enhance the dataset for modeling purposes:
+   - Age: Calculated from the birth year to determine the customer's age.
+   - Total Purchase: Aggregated the spending sum on all goods purchased by the customer.
+   - Is_Parent: Created a binary variable to indicate if the customer has children at home.
+   - Education: Categorized the education level into undergraduate, graduate, and post-graduate.
+   - Has_Partner: Determined if the customer is living with a partner.
+   - Family Size: Calculated the total number of family members based on the number of children and teenagers.
+   - Active Days: Calculated the number of days between customer enrollment and their last purchase.
+   - Campaign: Created a variable to indicate if the customer participated in a campaign.
+
 
 3. Algorithm Selection and Model Building:
    - Selected the K-means clustering algorithm for segmenting customers based on their attributes.
@@ -44,12 +53,7 @@ The project structure is organized as follows:
 
 ## Requirements
 
-To run the code and reproduce the customer segmentation analysis, the following requirements must be met:
-
-- R programming language (version X.X.X)
-- R packages: [package1], [package2], [package3], ...
-
-Please refer to the `Requirements.r` file for more detailed information on the specific R packages and their versions required for this project.
+Run the `Requirements.r` file to install specific R packages and their versions required for this project.
 
 ## License
 
