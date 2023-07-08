@@ -36,7 +36,7 @@ library(plotly)
 ```
 
 ```{r pressure, echo=FALSE}
-df <- read.csv('./Customer_Data.csv')
+df <- read.csv('Data/Customer_Data.csv')
 df %>% 
   head()
 ```
@@ -634,7 +634,7 @@ ggplot(df, aes(x = Total_Purchaase, y = Income, color = cluster)) +
 
 ```
 
-Green is high income while yellow is low income
+Green is high income while yellow is high income
 
 ```{r}
 
@@ -664,7 +664,7 @@ mutate(Total_Promos = AcceptedCmp1 + AcceptedCmp2 + AcceptedCmp3 + AcceptedCmp4 
 
 ```
 
-The later campaign were most appealed to green cluster
+The later campaign were most appealed to yellow cluster
 
 ```{r}
 ggplot(df, aes(x = factor(cluster), y = NumDealsPurchases, fill = factor(cluster))) +
@@ -676,7 +676,7 @@ ggplot(df, aes(x = factor(cluster), y = NumDealsPurchases, fill = factor(cluster
 
 ```
 
-green did not get too many deals
+yellow did not get too many deals
 
 ```{r}
 df %>% 
@@ -752,20 +752,60 @@ ggplot(df, aes(Has_Partner, fill = cluster)) +
 
 Red and Yellow have a partner while blue mostly doesn't and nothing conclusive could be said about green.
 
+```{r}
+write.csv(df,"Data/CustomerWithClusters.csv")
+```
+
 ## Conclusion
 
-### Cluster 1 - Blue
+### Red Cluster:
 
-Mostly Single \n Mostly Not a Parent \n Age-wise they are somewhere 30-60 \n Mid to High Income Group
+Income: Average
 
-### Cluster 2 - Red
+Teens at Home: 1-2 teens
 
-They are parents \n They have a Partner \n Average Income Group \n Are Older
+Family Size: More than 2 members
 
-### Cluster 3 - Yellow
+Age: 40-60 years old
 
-Mostly have a partner \n They are parent \n Low Income Group Are \n Younger than other groups (30-40)
+Parent: 1 partner
 
-### Cluster 4 - Green
 
-Good Proportion of them have a Partner \n Are not Parent \n High Income Group \n Age-wise they are distributed evenly
+### Blue Cluster:
+
+Income: Low
+
+Teens at Home: Somewhere in between (unclear range)
+
+Family Size: 1-2 members
+
+Age: 30-40 years old
+
+Parent: 1 parent
+
+
+### Yellow Cluster:
+
+Income: High
+
+Teens at Home: No teens at home
+
+Family Size: No family
+
+Age: Not specified
+
+Parent: Somewhere in between (unclear criteria)
+
+
+
+###Green Cluster:
+
+Income: Average
+
+Teens at Home: Somewhere in between (unclear range)
+
+Family Size: Single person household
+
+Age: Not specified
+
+Partner: Single (Could be Single Parents)
