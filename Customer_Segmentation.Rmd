@@ -1,6 +1,8 @@
 ---
 title: "CustomerSegmentation"
-output: html_document
+output:
+  html_document:
+    df_print: paged
 date: "2023-05-02"
 auther: Shubham Sanjay Misar
 ---
@@ -9,21 +11,34 @@ auther: Shubham Sanjay Misar
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+```{r}
+if (!require("ISLR2")) install.packages("ISLR2")
+if (!require("cluster")) install.packages("cluster")
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+if (!require("ggdendro")) install.packages("ggdendro")
+if (!require("factoextra")) install.packages("factoextra")
+```
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r}
 library(dplyr)
 library(ggplot2)
 library(GGally)
+library(tibble)
+
+library(cluster)
+
+library(tidyr)
+
+library(factoextra)
+
+library(plotly)
 ```
 
 ```{r pressure, echo=FALSE}
 df <- read.csv('./Customer_Data.csv')
-df
+df %>% 
+  head()
 ```
 
 ## EDA
@@ -117,7 +132,7 @@ ggplot(df, aes(x = "", y = Income)) +
 
 ```
 
-## Inspecting the missing data
+### Inspecting the missing data
 
 ```{r}
 df[!complete.cases(df),]
@@ -464,7 +479,8 @@ features <- df %>%
 ```
 
 ```{r}
-features
+features %>% 
+  head()
 ```
 
 ```{r}
@@ -475,10 +491,6 @@ str(features)
 features$Education <- as.integer(factor(features$Education, levels = c("Postgraduate","Graduate", "Undergraduate")))
 ```
 
-```{r}
-features
-```
-
 ## PCA
 
 ```{r}
@@ -486,8 +498,35 @@ pca <- prcomp(features, scale = TRUE)
 ```
 
 ```{r}
-pca
+summary(pca)
 ```
+
+```{r}
+library(ggplot2)
+library(factoextra)
+
+
+# Create a biplot
+biplot <- fviz_pca_biplot(pca, 
+                          geom.ind = "point", 
+                          col.ind = "grey",
+                          palette = "jco",
+                          repel = TRUE,
+                          ggtheme = theme_classic() +
+                                     theme(axis.line = element_line(colour = "grey"),
+                                           axis.title = element_text(size = 12),
+                                           axis.text = element_text(size = 10),
+                                           panel.grid.major = element_blank(),
+                                           panel.grid.minor = element_blank(),
+                                           panel.border = element_blank(),
+                                           panel.background = element_blank()))
+
+# Display the biplot
+biplot
+
+```
+
+
 
 ```{r}
 screeplot(pca)
@@ -526,14 +565,14 @@ p
 ```
 
 ```{r}
-set.seed(1)
+
 fviz_nbclust(pca$x[,1:3], kmeans, method = "wss",k.max=10, nstart=20, iter.max=20) +
   geom_vline(xintercept = 4, linetype = 4)+
   labs(subtitle = "Elbow method")
 ```
 
-```{r message = False}
-set.seed(1)
+```{r message = FALSE}
+
 gap_kmeans <- clusGap(pca$x[,1:3], kmeans, nstart = 20, K.max = 10, B = 100)
 
 plot(gap_kmeans, main = "Gap Statistic: kmeans")
