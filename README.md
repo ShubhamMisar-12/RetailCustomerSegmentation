@@ -1,59 +1,36 @@
-# CustomerSegmentation
+# Retail Customer Segmentation Project
 
-This repository contains the code and data for a customer segmentation project. The goal of this project is to analyze customer data and identify different segments of customers based on their attributes and behaviors. By understanding customer segments, businesses can tailor their products and marketing strategies to specific customer groups, improving customer satisfaction and business performance.
+This repository contains the code and data for a retail customer segmentation project. The goal of this project is to analyze customer data from a retail company and identify different segments of customers based on their attributes and behaviors. By understanding customer segments, the retail company can tailor its products, marketing strategies, and customer experiences to specific customer groups, ultimately improving customer satisfaction and business performance.
 
 ## Data
 
-The dataset used for this project includes the following attributes for each customer:
+The dataset used for this project includes various attributes related to customers' demographics, purchasing behavior, and response to promotions. The data provides insights into customers' characteristics, enabling the identification of distinct customer segments.
 
-- ID: Customer's unique identifier
-- Year_Birth: Customer's birth year
-- Education: Customer's education level
-- Marital_Status: Customer's marital status
-- Income: Customer's yearly household income
-- Kidhome: Number of children in the customer's household
-- Teenhome: Number of teenagers in the customer's household
-- Dt_Customer: Date of customer's enrollment with the company
-- Recency: Number of days since the customer's last purchase
-- Complain: 1 if the customer complained in the last 2 years, 0 otherwise
+## Project Steps
 
-In addition, there are attributes related to the products purchased by customers and their response to promotions.
+1. Exploratory Data Analysis (EDA):
+   - Conducted EDA to gain insights into the data, including distribution of attributes, missing values, outliers, and correlations.
+   - Explored the relationship between different attributes and identified key variables for segmentation.
 
-## Conclusion
+2. Feature Engineering:
+   - Created additional features to enhance the dataset for modeling purposes, capturing relevant aspects such as age, total purchase amount, presence of children, education level, partnership status, family size, active days, and campaign participation.
 
-Based on the analysis of the customer data, the following customer segments were identified:
+3. Algorithm Selection and Model Building:
+   - Selected the K-means clustering algorithm for segmenting customers based on their attributes.
+   - Determined the optimal number of clusters using the selectkbest method and gap statistic evaluation.
+   - Implemented the K-means algorithm with the selected number of clusters.
 
-### Red Cluster:
+4. Dimensionality Reduction:
+   - Applied Principal Component Analysis (PCA) to visualize the clusters and understand the variability in the data.
 
-- Income: Average
-- Teens at Home: 1-2 teens
-- Family Size: More than 2 members
-- Age: 40-60 years old
-- Parent: 1 partner
+5. Cluster Profiling:
+   - Conducted cluster profiling to draw conclusions about each segment, including their characteristics, preferences, and behaviors.
+   - Analyzed the key attributes and features that distinguish each segment from the others.
+   - Generated insights and recommendations for business strategies and targeted marketing approaches for each customer segment.
 
-### Blue Cluster:
+## Repository Name: "retail-customer-segmentation"
 
-- Income: Low
-- Teens at Home: Somewhere in between (unclear range)
-- Family Size: 1-2 members
-- Age: 30-40 years old
-- Parent: 1 parent
-
-### Yellow Cluster:
-
-- Income: High
-- Teens at Home: No teens at home
-- Family Size: No family
-- Age: Not specified
-- Parent: Somewhere in between (unclear criteria)
-
-### Green Cluster:
-
-- Income: Average
-- Teens at Home: Somewhere in between (unclear range)
-- Family Size: Single person household
-- Age: Not specified
-- Partner: Single (Could be Single Parents)
+The suggested repository name for this project is "retail-customer-segmentation." It provides a concise and descriptive name that reflects the nature of the project and the main objective of analyzing customer data to segment retail customers.
 
 ## Project Structure
 
@@ -67,9 +44,10 @@ The project structure is organized as follows:
 
 ## Requirements
 
-Run the Requirements.R
-
 To run the code and reproduce the customer segmentation analysis, the following requirements must be met:
+
+- R programming language (version X.X.X)
+- R packages: [package1], [package2], [package3], ...
 
 Please refer to the `Requirements.r` file for more detailed information on the specific R packages and their versions required for this project.
 
