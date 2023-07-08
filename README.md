@@ -6,6 +6,43 @@ This repository contains the code and data for a retail customer segmentation pr
 
 The dataset used for this project includes various attributes related to customers' demographics, purchasing behavior, and response to promotions. The data provides insights into customers' characteristics, enabling the identification of distinct customer segments.
 
+## Conclution
+
+Based on the analysis of the customer data, the following customer segments were identified:
+
+### Red Cluster:
+
+- Income: Average
+- Teens at Home: 1-2 teens
+- Family Size: More than 2 members
+- Age: 40-60 years old
+- Parent: 1 partner
+
+### Blue Cluster:
+
+- Income: Low
+- Teens at Home: Somewhere in between (unclear range)
+- Family Size: 1-2 members
+- Age: 30-40 years old
+- Parent: 1 parent
+
+### Yellow Cluster:
+
+- Income: High
+- Teens at Home: No teens at home
+- Family Size: No family
+- Age: Not specified
+- Parent: Somewhere in between (unclear criteria)
+
+### Green Cluster:
+
+- Income: Average
+- Teens at Home: Somewhere in between (unclear range)
+- Family Size: Single person household
+- Age: Not specified
+- Partner: Single (Could be Single Parents)
+
+
 ## Project Steps
 
 1. Exploratory Data Analysis (EDA):
