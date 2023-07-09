@@ -74,10 +74,6 @@ Based on the analysis of the customer data, the following customer segments were
    - Analyzed the key attributes and features that distinguish each segment from the others.
    - Generated insights and recommendations for business strategies and targeted marketing approaches for each customer segment.
 
-## Repository Name: "retail-customer-segmentation"
-
-The suggested repository name for this project is "retail-customer-segmentation." It provides a concise and descriptive name that reflects the nature of the project and the main objective of analyzing customer data to segment retail customers.
-
 ## Project Structure
 
 The project structure is organized as follows:
